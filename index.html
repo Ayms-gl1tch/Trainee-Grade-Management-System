@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Stagiaires</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow : 0 2px 10px rgba(0,0,0,0.1); }
+        input[type="text"], input[type="number"] { padding: 8px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        .btn-supprimer { background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        #btn-ajouter { background-color: #5f5fc7; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Notes des Stagiaires</h2>
+        <p>ID : <input type="text" id="id_input"></p>
+        <p>Nom : <input type="text" id="nom_input"></p>
+        <p>Filière : 
+            <input type="radio" name="filiere" value="DD" checked> DD
+            <input type="radio" name="filiere" value="ID"> ID
+            <input type="radio" name="filiere" value="PC"> PC
+        </p>
+        <p>Note : <input type="number" id="note_input"></p>
+        <button id="btn-ajouter">Ajouter Stagiaire</button>
+    </div>
+
+    <div class="container" style="margin-top: 20px;">
+        <h2>Liste des notes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Filière</th>
+                    <th>Note</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="corps-table"></tbody>
+        </table>
+        <h3>La Meilleure Note est : <span id="note-max">-</span></h3>
+    </div>
+
+    <script>
+        let listeStagiaires = [];
+
+        // Fonction pour récupérer la filière choisie
+        function getFiliereValue() {
+            const radios = document.getElementsByName("filiere");
+            for (let r of radios) {
+                if (r.checked) return r.value;
+            }
+            return "";
+        }
+
+        function afficher() {
+            const tbody = document.getElementById("corps-table");
+            const spanMax = document.getElementById("note-max");
+            tbody.innerHTML = ""; // On vide le tableau avant d'afficher
+            
+            let max = 0;
+
+            listeStagiaires.forEach((st, index) => {
+                // Mise à jour de la note max
+                if (parseFloat(st.note) > max) max = parseFloat(st.note);
+
+                // Création de la ligne avec les backticks ``
+                const ligne = `
+                    <tr>
+                        <td>${st.id}</td>
+                        <td>${st.nom}</td>
+                        <td>${st.filiere}</td>
+                        <td>${st.note}</td>
+                        <td><button class="btn-supprimer" onclick="supprimer(${index})">Supprimer</button></td>
+                    </tr>`;
+                tbody.innerHTML += ligne;
+            });
+
+            spanMax.innerText = listeStagiaires.length > 0 ? max : "-";
+        }
+
+        function ajouter() {
+            const idVal = document.getElementById("id_input").value;
+            const nomVal = document.getElementById("nom_input").value;
+            const noteVal = document.getElementById("note_input").value;
+            const filiereVal = getFiliereValue();
+
+            if (idVal === "" || nomVal === "" || noteVal === "") {
+                alert("Veuillez remplir tous les champs !");
+                return;
+            }
+
+            const nouveau = { id: idVal, nom: nomVal, note: noteVal, filiere: filiereVal };
+            listeStagiaires.push(nouveau);
+            
+            // Réinitialiser les champs
+            document.getElementById("id_input").value = "";
+            document.getElementById("nom_input").value = "";
+            document.getElementById("note_input").value = "";
+
+            afficher();
+        }
+
+        function supprimer(index) {
+            if (confirm("Supprimer ce stagiaire ?")) {
+                listeStagiaires.splice(index, 1);
+                afficher();
+            }
+        }
+
+        // Ecouteur d'événement sur le bouton ajouter
+        document.getElementById("btn-ajouter").addEventListener('click', ajouter);
+    </script>
+</body>
+</html>
