@@ -49,7 +49,6 @@
     <script>
         let listeStagiaires = [];
 
-        // Fonction pour récupérer la filière choisie
         function getFiliereValue() {
             const radios = document.getElementsByName("filiere");
             for (let r of radios) {
@@ -61,15 +60,14 @@
         function afficher() {
             const tbody = document.getElementById("corps-table");
             const spanMax = document.getElementById("note-max");
-            tbody.innerHTML = ""; // On vide le tableau avant d'afficher
+            tbody.innerHTML = ""; 
             
             let max = 0;
 
             listeStagiaires.forEach((st, index) => {
-                // Mise à jour de la note max
+           
                 if (parseFloat(st.note) > max) max = parseFloat(st.note);
 
-                // Création de la ligne avec les backticks ``
                 const ligne = `
                     <tr>
                         <td>${st.id}</td>
@@ -98,7 +96,7 @@
             const nouveau = { id: idVal, nom: nomVal, note: noteVal, filiere: filiereVal };
             listeStagiaires.push(nouveau);
             
-            // Réinitialiser les champs
+     
             document.getElementById("id_input").value = "";
             document.getElementById("nom_input").value = "";
             document.getElementById("note_input").value = "";
@@ -113,7 +111,7 @@
             }
         }
 
-        // Ecouteur d'événement sur le bouton ajouter
+       
         document.getElementById("btn-ajouter").addEventListener('click', ajouter);
     </script>
 </body>
